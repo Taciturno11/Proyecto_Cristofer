@@ -275,11 +275,11 @@ export class LoginComponent implements OnInit {
           this.successMessage = '';
         }, 5000);
       }
-      
+
       // Pre-llenar email si viene del registro
       if (params['email']) {
         this.loginForm.patchValue({
-          userName: params['email']
+          userName: params['email'],
         });
       }
     });

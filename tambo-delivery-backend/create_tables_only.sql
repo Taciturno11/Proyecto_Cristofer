@@ -1,15 +1,18 @@
 -- ============================================
--- SCRIPT COMPLETO MYSQL - TODO EN UNO
+-- CREAR SOLO BASE DE DATOS Y TABLAS (SIN DATOS)
+-- Base de datos: tambo_bd
 -- ============================================
 
+-- Crear la base de datos
 DROP DATABASE IF EXISTS `tambo_bd`;
 CREATE DATABASE `tambo_bd` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `tambo_bd`;
 
 -- ============================================
--- CREAR TABLAS
+-- CREAR TODAS LAS TABLAS
 -- ============================================
 
+-- Tabla: auth_authority
 CREATE TABLE `auth_authority` (
   `id` BINARY(16) NOT NULL,
   `authority_name` VARCHAR(50) NOT NULL,
@@ -18,6 +21,7 @@ CREATE TABLE `auth_authority` (
   UNIQUE KEY `UK_authority_name` (`authority_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: auth_user_details
 CREATE TABLE `auth_user_details` (
   `id` BINARY(16) NOT NULL,
   `created_at` DATETIME(6) DEFAULT NULL,
@@ -37,6 +41,7 @@ CREATE TABLE `auth_user_details` (
   UNIQUE KEY `UK_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: auth_user_authority
 CREATE TABLE `auth_user_authority` (
   `user_id` BINARY(16) NOT NULL,
   `authority_id` BINARY(16) NOT NULL,
@@ -46,6 +51,7 @@ CREATE TABLE `auth_user_authority` (
   CONSTRAINT `FK_user_authority_authority` FOREIGN KEY (`authority_id`) REFERENCES `auth_authority` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: brands
 CREATE TABLE `brands` (
   `id` BINARY(16) NOT NULL,
   `description` VARCHAR(500) DEFAULT NULL,
@@ -54,6 +60,7 @@ CREATE TABLE `brands` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: categories
 CREATE TABLE `categories` (
   `id` BINARY(16) NOT NULL,
   `description` TEXT,
@@ -62,6 +69,7 @@ CREATE TABLE `categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: category_type
 CREATE TABLE `category_type` (
   `id` BINARY(16) NOT NULL,
   `description` TEXT,
@@ -73,6 +81,7 @@ CREATE TABLE `category_type` (
   CONSTRAINT `FK_category_type_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: discount
 CREATE TABLE `discount` (
   `id` BINARY(16) NOT NULL,
   `end_date` DATETIME(6) DEFAULT NULL,
@@ -83,6 +92,7 @@ CREATE TABLE `discount` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: product_sections
 CREATE TABLE `product_sections` (
   `id` BINARY(16) NOT NULL,
   `product_limit` INT DEFAULT 8,
@@ -93,6 +103,7 @@ CREATE TABLE `product_sections` (
   CONSTRAINT `FK_product_section_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: products
 CREATE TABLE `products` (
   `id` BINARY(16) NOT NULL,
   `created_at` DATETIME(6) DEFAULT NULL,
@@ -118,6 +129,7 @@ CREATE TABLE `products` (
   CONSTRAINT `FK_product_category_type` FOREIGN KEY (`category_type_id`) REFERENCES `category_type` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: product_discounts (relación muchos a muchos)
 CREATE TABLE `product_discounts` (
   `discount_id` BINARY(16) NOT NULL,
   `product_id` BINARY(16) NOT NULL,
@@ -127,6 +139,7 @@ CREATE TABLE `product_discounts` (
   CONSTRAINT `FK_product_discount_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: product_resources
 CREATE TABLE `product_resources` (
   `id` BINARY(16) NOT NULL,
   `description` VARCHAR(255) DEFAULT NULL,
@@ -139,6 +152,7 @@ CREATE TABLE `product_resources` (
   CONSTRAINT `FK_resource_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: orders
 CREATE TABLE `orders` (
   `id` BINARY(16) NOT NULL,
   `created_at` DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6),
@@ -160,6 +174,7 @@ CREATE TABLE `orders` (
   CONSTRAINT `FK_order_user` FOREIGN KEY (`user_id`) REFERENCES `auth_user_details` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabla: order_items
 CREATE TABLE `order_items` (
   `id` BINARY(16) NOT NULL,
   `item_price` DOUBLE DEFAULT NULL,
@@ -174,17 +189,5 @@ CREATE TABLE `order_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
--- INSERTAR DATOS NECESARIOS
--- ============================================
-
--- Roles (CRÍTICO para registro)
-INSERT INTO `auth_authority` VALUES 
-  (UUID_TO_BIN(UUID()), 'USER', 'Usuario estándar'),
-  (UUID_TO_BIN(UUID()), 'ADMIN', 'Administrador del sistema');
-
--- Verificar
-SELECT authority_name, description FROM auth_authority;
-
--- ============================================
--- LISTO - Base de datos funcional
+-- FIN - Solo tablas creadas, sin datos
 -- ============================================

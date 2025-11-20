@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalComponent } from '../../../shared/components/modal.component';
@@ -58,14 +66,14 @@ import { ProductResource } from '../../../models/product.model';
               </select>
             </div>
             @if (primaryResource.url) {
-              <div class="mt-2">
-                <img
-                  [src]="primaryResource.url"
-                  alt="Vista previa"
-                  class="h-32 w-32 object-cover rounded-lg border border-gray-300"
-                  (error)="onImageError($event)"
-                />
-              </div>
+            <div class="mt-2">
+              <img
+                [src]="primaryResource.url"
+                alt="Vista previa"
+                class="h-32 w-32 object-cover rounded-lg border border-gray-300"
+                (error)="onImageError($event)"
+              />
+            </div>
             }
           </div>
         </div>
@@ -85,71 +93,77 @@ import { ProductResource } from '../../../models/product.model';
           </div>
 
           @if (additionalResources.length === 0) {
-            <p class="text-sm text-gray-500 text-center py-4">
-              No hay imágenes adicionales. Haz clic en "Agregar Imagen" para añadir más.
-            </p>
+          <p class="text-sm text-gray-500 text-center py-4">
+            No hay imágenes adicionales. Haz clic en "Agregar Imagen" para
+            añadir más.
+          </p>
           } @else {
-            <div class="space-y-4">
-              @for (resource of additionalResources; track $index) {
-                <div class="bg-white border border-gray-300 rounded-lg p-3">
-                  <div class="flex justify-between items-start mb-3">
-                    <span class="text-sm font-medium text-gray-700">Imagen {{ $index + 1 }}</span>
-                    <button
-                      type="button"
-                      (click)="removeAdditionalResource($index)"
-                      class="text-red-600 hover:text-red-800 text-sm"
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                  <div class="space-y-2">
-                    <input
-                      type="text"
-                      [(ngModel)]="resource.name"
-                      class="w-full px-3 py-2 placeholder-gray-400 border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-0.5 focus:ring-[#a81b8d] focus:border-[#a81b8d]"
-                      placeholder="Nombre de la imagen"
-                    />
-                    <input
-                      type="url"
-                      [(ngModel)]="resource.url"
-                      class="w-full px-3 py-2 placeholder-gray-400 border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-0.5 focus:ring-[#a81b8d] focus:border-[#a81b8d]"
-                      placeholder="URL de la imagen"
-                    />
-                    <select
-                      [(ngModel)]="resource.type"
-                      class="w-full px-3 py-2 placeholder-gray-400 border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-0.5 focus:ring-[#a81b8d] focus:border-[#a81b8d]"
-                    >
-                      <option value="IMAGE">Imagen</option>
-                      <option value="VIDEO">Video</option>
-                    </select>
-                    @if (resource.url) {
-                      <img
-                        [src]="resource.url"
-                        alt="Vista previa"
-                        class="h-24 w-24 object-cover rounded-lg border border-gray-300"
-                        (error)="onImageError($event)"
-                      />
-                    }
-                  </div>
-                </div>
-              }
+          <div class="space-y-4">
+            @for (resource of additionalResources; track $index) {
+            <div class="bg-white border border-gray-300 rounded-lg p-3">
+              <div class="flex justify-between items-start mb-3">
+                <span class="text-sm font-medium text-gray-700"
+                  >Imagen {{ $index + 1 }}</span
+                >
+                <button
+                  type="button"
+                  (click)="removeAdditionalResource($index)"
+                  class="text-red-600 hover:text-red-800 text-sm"
+                >
+                  Eliminar
+                </button>
+              </div>
+              <div class="space-y-2">
+                <input
+                  type="text"
+                  [(ngModel)]="resource.name"
+                  class="w-full px-3 py-2 placeholder-gray-400 border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-0.5 focus:ring-[#a81b8d] focus:border-[#a81b8d]"
+                  placeholder="Nombre de la imagen"
+                />
+                <input
+                  type="url"
+                  [(ngModel)]="resource.url"
+                  class="w-full px-3 py-2 placeholder-gray-400 border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-0.5 focus:ring-[#a81b8d] focus:border-[#a81b8d]"
+                  placeholder="URL de la imagen"
+                />
+                <select
+                  [(ngModel)]="resource.type"
+                  class="w-full px-3 py-2 placeholder-gray-400 border text-sm border-gray-300 rounded-lg focus:outline-none focus:ring-0.5 focus:ring-[#a81b8d] focus:border-[#a81b8d]"
+                >
+                  <option value="IMAGE">Imagen</option>
+                  <option value="VIDEO">Video</option>
+                </select>
+                @if (resource.url) {
+                <img
+                  [src]="resource.url"
+                  alt="Vista previa"
+                  class="h-24 w-24 object-cover rounded-lg border border-gray-300"
+                  (error)="onImageError($event)"
+                />
+                }
+              </div>
             </div>
+            }
+          </div>
           }
         </div>
 
         <!-- Información -->
         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <p class="text-sm text-yellow-800">
-            <strong>Nota:</strong> La imagen principal será la que se muestre en el catálogo. 
-            Las imágenes adicionales aparecerán en la galería del producto.
+            <strong>Nota:</strong> La imagen principal será la que se muestre en
+            el catálogo. Las imágenes adicionales aparecerán en la galería del
+            producto.
           </p>
         </div>
 
         <!-- Error message -->
         @if (errorMessage) {
-          <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            {{ errorMessage }}
-          </div>
+        <div
+          class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"
+        >
+          {{ errorMessage }}
+        </div>
         }
       </div>
 
@@ -212,9 +226,13 @@ export class ProductCreatePhase2ModalComponent implements OnInit, OnChanges {
         this.resetResources();
       }
     }
-    
+
     // Detectar cuando cambian los recursos iniciales mientras el modal está abierto
-    if (changes['initialResources'] && !changes['initialResources'].firstChange && this.isOpen) {
+    if (
+      changes['initialResources'] &&
+      !changes['initialResources'].firstChange &&
+      this.isOpen
+    ) {
       this.loadInitialData();
     }
   }
@@ -222,14 +240,14 @@ export class ProductCreatePhase2ModalComponent implements OnInit, OnChanges {
   private loadInitialData(): void {
     // Si hay datos iniciales (modo edición), cargarlos
     if (this.initialResources && this.initialResources.length > 0) {
-      const primary = this.initialResources.find(r => r.isPrimary);
+      const primary = this.initialResources.find((r) => r.isPrimary);
       if (primary) {
         this.primaryResource = { ...primary };
       }
       this.additionalResources = this.initialResources
-        .filter(r => !r.isPrimary)
-        .map(r => ({ ...r }));
-      
+        .filter((r) => !r.isPrimary)
+        .map((r) => ({ ...r }));
+
       // console.log('✅ [Phase2] Recursos cargados para edición:', {
       //   primary: this.primaryResource,
       //   additional: this.additionalResources
@@ -279,7 +297,7 @@ export class ProductCreatePhase2ModalComponent implements OnInit, OnChanges {
 
     const allResources: ProductResource[] = [
       this.primaryResource,
-      ...this.additionalResources.filter(r => r.url.trim() !== '')
+      ...this.additionalResources.filter((r) => r.url.trim() !== ''),
     ];
 
     // Emitir los recursos sin llamar API

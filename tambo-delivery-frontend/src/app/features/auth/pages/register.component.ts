@@ -129,18 +129,16 @@ import { AuthService } from '../../../core/services/auth.service';
                     placeholder="987654321"
                   />
                   @if (registerForm.get('phoneNumber')?.invalid &&
-                  registerForm.get('phoneNumber')?.touched) {
-                    @if (registerForm.get('phoneNumber')?.errors?.['required']) {
-                      <p class="mt-1 text-sm text-red-600">
-                        El teléfono es requerido
-                      </p>
-                    }
-                    @if (registerForm.get('phoneNumber')?.errors?.['pattern']) {
-                      <p class="mt-1 text-sm text-red-600">
-                        El teléfono debe tener exactamente 9 dígitos
-                      </p>
-                    }
-                  }
+                  registerForm.get('phoneNumber')?.touched) { @if
+                  (registerForm.get('phoneNumber')?.errors?.['required']) {
+                  <p class="mt-1 text-sm text-red-600">
+                    El teléfono es requerido
+                  </p>
+                  } @if (registerForm.get('phoneNumber')?.errors?.['pattern']) {
+                  <p class="mt-1 text-sm text-red-600">
+                    El teléfono debe tener exactamente 9 dígitos
+                  </p>
+                  } }
                 </div>
 
                 <div>
@@ -282,17 +280,17 @@ import { AuthService } from '../../../core/services/auth.service';
                 (click)="onButtonClick($event)"
               >
                 @if (isLoading) {
-                  <span>Cargando...</span>
+                <span>Cargando...</span>
                 } @else {
-                  <span>Crear cuenta</span>
+                <span>Crear cuenta</span>
                 }
               </button>
-              
+
               <!-- Mensaje de ayuda si el formulario es inválido -->
               @if (registerForm.invalid && registerForm.touched) {
-                <div class="text-sm text-red-600 text-center mt-2">
-                  Por favor completa todos los campos correctamente
-                </div>
+              <div class="text-sm text-red-600 text-center mt-2">
+                Por favor completa todos los campos correctamente
+              </div>
               }
 
               <!-- Separador -->
@@ -380,7 +378,10 @@ export class RegisterComponent {
         firstName: ['', [Validators.required]],
         lastName: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.email]],
-        phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{9}$/)]],
+        phoneNumber: [
+          '',
+          [Validators.required, Validators.pattern(/^[0-9]{9}$/)],
+        ],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required]],
       },
@@ -403,7 +404,10 @@ export class RegisterComponent {
     console.log('🔐 Register: Event:', event);
     console.log('🔐 Register: Form valid?', this.registerForm.valid);
     console.log('🔐 Register: isLoading?', this.isLoading);
-    console.log('🔐 Register: Button disabled?', this.isLoading || this.registerForm.invalid);
+    console.log(
+      '🔐 Register: Button disabled?',
+      this.isLoading || this.registerForm.invalid
+    );
   }
 
   onSubmit(): void {
@@ -412,7 +416,7 @@ export class RegisterComponent {
     console.log('🔐 Register: Form value:', this.registerForm.value);
     console.log('🔐 Register: Form errors:', this.registerForm.errors);
     console.log('🔐 Register: isLoading?', this.isLoading);
-    
+
     if (this.registerForm.valid && !this.isLoading) {
       this.isLoading = true;
       this.errorMessage = '';
@@ -435,25 +439,31 @@ export class RegisterComponent {
           console.log('🔐 Register: Response message:', response.message);
 
           if (response.code === 200) {
-            console.log('🔐 Register: Registration successful, redirecting to login');
-            
+            console.log(
+              '🔐 Register: Registration successful, redirecting to login'
+            );
+
             // Limpiar cualquier autenticación previa
             this.authService.logout();
-            
+
             // Mostrar mensaje de éxito y redirigir al login
             setTimeout(() => {
               console.log('🔐 Register: Executing navigation to login page');
-              this.router.navigate(['/auth/login'], {
-                queryParams: {
-                  registered: 'true',
-                  email: registerData.email,
-                  message: 'Cuenta creada exitosamente. Por favor, inicia sesión.'
-                }
-              }).then((success) => {
-                console.log('🔐 Register: Navigation result:', success);
-              }).catch((error) => {
-                console.error('🔐 Register: Navigation error:', error);
-              });
+              this.router
+                .navigate(['/auth/login'], {
+                  queryParams: {
+                    registered: 'true',
+                    email: registerData.email,
+                    message:
+                      'Cuenta creada exitosamente. Por favor, inicia sesión.',
+                  },
+                })
+                .then((success) => {
+                  console.log('🔐 Register: Navigation result:', success);
+                })
+                .catch((error) => {
+                  console.error('🔐 Register: Navigation error:', error);
+                });
             }, 100);
           } else {
             console.log(
@@ -481,32 +491,34 @@ export class RegisterComponent {
     } else {
       // Mostrar errores de validación
       console.log('🔐 Register: Form is invalid:', this.registerForm.errors);
-      
+
       const invalidFields: string[] = [];
       Object.keys(this.registerForm.controls).forEach((key) => {
         const control = this.registerForm.get(key);
         if (control && control.invalid) {
           console.log(`🔐 Register: Field ${key} is invalid:`, control.errors);
           control.markAsTouched();
-          
+
           // Nombres amigables de campos
           const fieldNames: { [key: string]: string } = {
-            'firstName': 'Nombres',
-            'lastName': 'Apellidos',
-            'email': 'Correo Electrónico',
-            'phoneNumber': 'Teléfono',
-            'password': 'Contraseña',
-            'confirmPassword': 'Confirmar Contraseña'
+            firstName: 'Nombres',
+            lastName: 'Apellidos',
+            email: 'Correo Electrónico',
+            phoneNumber: 'Teléfono',
+            password: 'Contraseña',
+            confirmPassword: 'Confirmar Contraseña',
           };
-          
+
           invalidFields.push(fieldNames[key] || key);
         }
       });
-      
+
       if (this.registerForm.errors?.['passwordMismatch']) {
         this.errorMessage = 'Las contraseñas no coinciden';
       } else if (invalidFields.length > 0) {
-        this.errorMessage = `Por favor completa correctamente: ${invalidFields.join(', ')}`;
+        this.errorMessage = `Por favor completa correctamente: ${invalidFields.join(
+          ', '
+        )}`;
       } else {
         this.errorMessage = 'Por favor completa todos los campos requeridos';
       }

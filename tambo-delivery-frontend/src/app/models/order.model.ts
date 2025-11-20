@@ -72,12 +72,12 @@ export enum OrderStatus {
   PREPARING = 'PREPARING',
   OUT_FOR_DELIVERY = 'OUT_FOR_DELIVERY',
   DELIVERED = 'DELIVERED',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
 }
 
 export enum DeliveryMethod {
-  DELIVERY = 'DELIVERY',  // Entrega a domicilio
-  STORE = 'STORE'         // Recojo en tienda
+  DELIVERY = 'DELIVERY', // Entrega a domicilio
+  STORE = 'STORE', // Recojo en tienda
 }
 
 export enum PaymentMethod {
@@ -86,35 +86,35 @@ export enum PaymentMethod {
   TRANSFERENCIA = 'TRANSFERENCIA',
   TARJETA_CREDITO = 'TARJETA_CREDITO',
   TARJETA_DEBITO = 'TARJETA_DEBITO',
-  PAYPAL = 'PAYPAL'
+  PAYPAL = 'PAYPAL',
 }
 
 export enum PaymentStatus {
   PENDING = 'PENDING',
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
-  REFUNDED = 'REFUNDED'
+  REFUNDED = 'REFUNDED',
 }
 
 export enum DeliveryStatus {
   PREPARING = 'PREPARING',
   ON_THE_WAY = 'ON_THE_WAY',
-  DELIVERED = 'DELIVERED'
+  DELIVERED = 'DELIVERED',
 }
 
 // DTOs para requests
 export interface OrderRequest {
-  orderDate?: Date;         // Fecha del pedido (opcional, el backend la genera si no viene)
+  orderDate?: Date; // Fecha del pedido (opcional, el backend la genera si no viene)
   deliveryMethod: DeliveryMethod;
   paymentMethod: PaymentMethod;
-  orderItemRequests: OrderItemRequest[];  // Backend espera orderItemRequests, no orderItems
-  totalAmount: number;      // Monto total del pedido (requerido por la BD)
+  orderItemRequests: OrderItemRequest[]; // Backend espera orderItemRequests, no orderItems
+  totalAmount: number; // Monto total del pedido (requerido por la BD)
   discountCode?: string;
-  receiptType: string;      // Tipo de comprobante: 'BOLETA' o 'FACTURA'
-  docType: string;          // Tipo de documento: 'DNI', 'RUC', 'CE', etc.
-  docNumber: number;        // Número de documento
-  ruc?: string;             // RUC (solo para facturas)
-  razonSocial?: string;     // Razón social (solo para facturas)
+  receiptType: string; // Tipo de comprobante: 'BOLETA' o 'FACTURA'
+  docType: string; // Tipo de documento: 'DNI', 'RUC', 'CE', etc.
+  docNumber: number; // Número de documento
+  ruc?: string; // RUC (solo para facturas)
+  razonSocial?: string; // Razón social (solo para facturas)
   deliveryAddress?: {
     firstName: string;
     lastName: string;
@@ -132,5 +132,5 @@ export interface OrderRequest {
 export interface OrderItemRequest {
   productId: string;
   quantity: number;
-  itemPrice?: number;       // Precio unitario (opcional, el backend lo toma del producto si no viene)
+  itemPrice?: number; // Precio unitario (opcional, el backend lo toma del producto si no viene)
 }

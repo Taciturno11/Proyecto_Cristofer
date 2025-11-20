@@ -2,7 +2,12 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Subscription, debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import {
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+  Subject,
+} from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { ProductService } from '../../features/products/services/product.service';
 import { CartService } from '../../services/cart.service';
@@ -87,86 +92,144 @@ import { ConfirmModalComponent } from '../../shared/components/confirm-modal.com
 
                 <!-- Dropdown Menu -->
                 @if (isCategoriesDropdownOpen) {
-                  <div class="absolute top-full left-0 mt-2 w-50 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-[500px] overflow-y-auto">
-                    <div class="py-2">
-                      @for (category of categories; track category.id) {
-                        <div 
-                          class="relative"
-                          (mouseenter)="onCategoryHover(category.id, $event)"
-                          (mouseleave)="hoveredCategoryId = null"
-                        >
-                          <!-- Categoría Principal -->
-                          <button
-                            #categoryButton
-                            (click)="category.categoryTypes && category.categoryTypes.length > 0 ? null : navigateToCategory(category.id)"
-                            class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#a81b8d] transition-colors flex items-center justify-between"
-                            [class.cursor-pointer]="!category.categoryTypes || category.categoryTypes.length === 0"
-                            [class.cursor-default]="category.categoryTypes && category.categoryTypes.length > 0"
-                          >
-                            <div class="flex items-center gap-3">
-                              <div class="w-2 h-2 bg-[#a81b8d] rounded-full"></div>
-                              <div class="font-semibold">{{ category.name }}</div>
-                            </div>
-                            @if (category.categoryTypes && category.categoryTypes.length > 0) {
-                              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                              </svg>
-                            }
-                          </button>
-                          
-                          <!-- Submenu de tipos de categoría (aparece al lado) -->
-                          @if (category.categoryTypes && category.categoryTypes.length > 0 && hoveredCategoryId === category.id) {
-                            <div 
-                              class="fixed w-45 bg-white rounded-lg shadow-2xl border border-gray-200 z-[60] max-h-[400px] overflow-y-auto"
-                              [style.left.px]="submenuPosition.left"
-                              [style.top.px]="submenuPosition.top"
-                            >
-                              <div class="py-2">                                
-                                <!-- Lista de tipos -->
-                                @for (type of category.categoryTypes; track type.id) {
-                                  <button
-                                    (click)="navigateToCategoryType(category.id, type.id)"
-                                    class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#fef2f9] hover:text-[#a81b8d] transition-all flex items-center gap-2 cursor-pointer border-l-2 border-transparent hover:border-[#a81b8d]"
-                                  >
-                                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                    <span class="font-medium">{{ type.name }}</span>
-                                  </button>
-                                }
-                                
-                                <!-- Ver todos de esta categoría -->
-                                <div class="border-t border-gray-100 mt-1 bg-gray-50">
-                                  <button
-                                    (click)="navigateToCategory(category.id)"
-                                    class="w-full text-left px-4 py-2.5 text-xs text-[#a81b8d] hover:bg-[#fef2f9] transition-colors font-semibold flex items-center gap-2 cursor-pointer"
-                                  >
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                                    </svg>
-                                    Ver todos de {{ category.name }}
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          }
+                <div
+                  class="absolute top-full left-0 mt-2 w-50 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-[500px] overflow-y-auto"
+                >
+                  <div class="py-2">
+                    @for (category of categories; track category.id) {
+                    <div
+                      class="relative"
+                      (mouseenter)="onCategoryHover(category.id, $event)"
+                      (mouseleave)="hoveredCategoryId = null"
+                    >
+                      <!-- Categoría Principal -->
+                      <button
+                        #categoryButton
+                        (click)="
+                          category.categoryTypes &&
+                          category.categoryTypes.length > 0
+                            ? null
+                            : navigateToCategory(category.id)
+                        "
+                        class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#a81b8d] transition-colors flex items-center justify-between"
+                        [class.cursor-pointer]="
+                          !category.categoryTypes ||
+                          category.categoryTypes.length === 0
+                        "
+                        [class.cursor-default]="
+                          category.categoryTypes &&
+                          category.categoryTypes.length > 0
+                        "
+                      >
+                        <div class="flex items-center gap-3">
+                          <div class="w-2 h-2 bg-[#a81b8d] rounded-full"></div>
+                          <div class="font-semibold">{{ category.name }}</div>
                         </div>
-                      }
-                      <!-- Ver todas las categorías -->
-                      <div class="border-t border-gray-100 mt-2 pt-2">
-                        <a
-                          routerLink="/products"
-                          (click)="closeCategoriesDropdown()"
-                          class="w-full text-left px-4 py-2 text-sm text-[#a81b8d] hover:bg-gray-100 transition-colors flex items-center gap-3 font-medium"
+                        @if (category.categoryTypes &&
+                        category.categoryTypes.length > 0) {
+                        <svg
+                          class="w-4 h-4 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                         >
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                          </svg>
-                          Ver todos
-                        </a>
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"
+                          ></path>
+                        </svg>
+                        }
+                      </button>
+
+                      <!-- Submenu de tipos de categoría (aparece al lado) -->
+                      @if (category.categoryTypes &&
+                      category.categoryTypes.length > 0 && hoveredCategoryId ===
+                      category.id) {
+                      <div
+                        class="fixed w-45 bg-white rounded-lg shadow-2xl border border-gray-200 z-[60] max-h-[400px] overflow-y-auto"
+                        [style.left.px]="submenuPosition.left"
+                        [style.top.px]="submenuPosition.top"
+                      >
+                        <div class="py-2">
+                          <!-- Lista de tipos -->
+                          @for (type of category.categoryTypes; track type.id) {
+                          <button
+                            (click)="
+                              navigateToCategoryType(category.id, type.id)
+                            "
+                            class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-[#fef2f9] hover:text-[#a81b8d] transition-all flex items-center gap-2 cursor-pointer border-l-2 border-transparent hover:border-[#a81b8d]"
+                          >
+                            <svg
+                              class="w-3.5 h-3.5 text-gray-400"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 5l7 7-7 7"
+                              ></path>
+                            </svg>
+                            <span class="font-medium">{{ type.name }}</span>
+                          </button>
+                          }
+
+                          <!-- Ver todos de esta categoría -->
+                          <div class="border-t border-gray-100 mt-1 bg-gray-50">
+                            <button
+                              (click)="navigateToCategory(category.id)"
+                              class="w-full text-left px-4 py-2.5 text-xs text-[#a81b8d] hover:bg-[#fef2f9] transition-colors font-semibold flex items-center gap-2 cursor-pointer"
+                            >
+                              <svg
+                                class="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                                ></path>
+                              </svg>
+                              Ver todos de {{ category.name }}
+                            </button>
+                          </div>
+                        </div>
                       </div>
+                      }
+                    </div>
+                    }
+                    <!-- Ver todas las categorías -->
+                    <div class="border-t border-gray-100 mt-2 pt-2">
+                      <a
+                        routerLink="/products"
+                        (click)="closeCategoriesDropdown()"
+                        class="w-full text-left px-4 py-2 text-sm text-[#a81b8d] hover:bg-gray-100 transition-colors flex items-center gap-3 font-medium"
+                      >
+                        <svg
+                          class="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7"
+                          ></path>
+                        </svg>
+                        Ver todos
+                      </a>
                     </div>
                   </div>
+                </div>
                 }
               </div>
               <a
@@ -209,9 +272,21 @@ import { ConfirmModalComponent } from '../../shared/components/confirm-modal.com
             <!-- Barra de búsqueda -->
             <div class="hidden md:flex items-center max-w-md mx-4 relative">
               <div class="relative w-full">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <svg
+                    class="w-4 h-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    ></path>
                   </svg>
                 </div>
                 <input
@@ -224,25 +299,32 @@ import { ConfirmModalComponent } from '../../shared/components/confirm-modal.com
                   class="w-full pl-10 pr-4 py-2 border-1 border-gray-300 rounded-lg focus:outline-none focus:ring-[#a81b8d] focus:border-[#a81b8d] text-sm"
                 />
                 @if (searchTerm && searchResults.length > 0) {
-                  <div class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
-                    @for (result of searchResults; track result.id) {
-                      <a
-                        [routerLink]="['/products', result.id]"
-                        (click)="clearSearch()"
-                        class="flex items-center px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-                      >
-                        <img
-                          [src]="result.thumbnail || 'assets/images/no-image.webp'"
-                          [alt]="result.name"
-                          class="w-10 h-10 rounded-lg object-cover mr-3"
-                        />
-                        <div class="flex-1">
-                          <div class="text-sm font-medium text-gray-900">{{ result.name }}</div>
-                          <div class="text-xs text-gray-600">{{ result.category.name }} • S/ {{ result.price.toFixed(2) }}</div>
-                        </div>
-                      </a>
-                    }
-                  </div>
+                <div
+                  class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto"
+                >
+                  @for (result of searchResults; track result.id) {
+                  <a
+                    [routerLink]="['/products', result.id]"
+                    (click)="clearSearch()"
+                    class="flex items-center px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                  >
+                    <img
+                      [src]="result.thumbnail || 'assets/images/no-image.webp'"
+                      [alt]="result.name"
+                      class="w-10 h-10 rounded-lg object-cover mr-3"
+                    />
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ result.name }}
+                      </div>
+                      <div class="text-xs text-gray-600">
+                        {{ result.category.name }} • S/
+                        {{ result.price.toFixed(2) }}
+                      </div>
+                    </div>
+                  </a>
+                  }
+                </div>
                 }
               </div>
             </div>
@@ -289,125 +371,167 @@ import { ConfirmModalComponent } from '../../shared/components/confirm-modal.com
                   />
                 </svg>
                 @if (cartItemCount > 0) {
-                  <span class="absolute -top-1 -right-1 bg-[#a81b8d] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
-                    {{ cartItemCount }}
-                  </span>
+                <span
+                  class="absolute -top-1 -right-1 bg-[#a81b8d] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]"
+                >
+                  {{ cartItemCount }}
+                </span>
                 }
               </a>
 
               <!-- Perfil Dropdown -->
               <div class="relative">
                 @if (!isAuthenticated) {
-                  <!-- Ícono de perfil para no autenticados -->
-                  <a
-                    routerLink="/auth/login"
-                    class="text-gray-900 hover:text-[#a81b8d] px-3 py-2 flex items-center cursor-pointer"
-                    title="Iniciar sesión"
+                <!-- Ícono de perfil para no autenticados -->
+                <a
+                  routerLink="/auth/login"
+                  class="text-gray-900 hover:text-[#a81b8d] px-3 py-2 flex items-center cursor-pointer"
+                  title="Iniciar sesión"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="size-6"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                      />
-                    </svg>
-                  </a>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                    />
+                  </svg>
+                </a>
                 } @else {
-                  <!-- Dropdown para usuarios autenticados -->
-                  <button
-                    (click)="toggleProfileDropdown()"
-                    class="flex items-center gap-2 text-gray-900 hover:text-[#a81b8d] px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors cursor-pointer"
+                <!-- Dropdown para usuarios autenticados -->
+                <button
+                  (click)="toggleProfileDropdown()"
+                  class="flex items-center gap-2 text-gray-900 hover:text-[#a81b8d] px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors cursor-pointer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-6"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="size-6"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                      />
-                    </svg>
-                    <span class="hidden md:inline">{{ currentUser?.firstName || 'Usuario' }}</span>
-                    <!-- Ícono de chevron -->
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4 transition-transform duration-200"
-                      [class.rotate-180]="isProfileDropdownOpen"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </button>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                    />
+                  </svg>
+                  <span class="hidden md:inline">{{
+                    currentUser?.firstName || 'Usuario'
+                  }}</span>
+                  <!-- Ícono de chevron -->
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 transition-transform duration-200"
+                    [class.rotate-180]="isProfileDropdownOpen"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </button>
 
-                  <!-- Dropdown Menu -->
-                  @if (isProfileDropdownOpen) {
-                    <div class="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                      <div class="py-2">
-                        <!-- Info del usuario -->
-                        <div class="px-4 py-2 border-b border-gray-100">
-                          <div class="text-sm font-medium text-gray-900">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</div>
-                          <div class="text-xs text-gray-500">{{ currentUser?.email }}</div>
-                        </div>
-                        
-                        <!-- Enlaces del menú -->
-                        <a
-                          routerLink="/orders"
-                          (click)="closeProfileDropdown()"
-                          class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#a81b8d] transition-colors cursor-pointer"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                          </svg>
-                          Mis Pedidos
-                        </a>
-                        
-                        <a
-                          routerLink="/profile"
-                          (click)="closeProfileDropdown()"
-                          class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#a81b8d] transition-colors cursor-pointer"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                          </svg>
-                          Mi Perfil
-                        </a>
-
-                        <!-- Separador -->
-                        <div class="border-t border-gray-100 my-2"></div>
-
-                        <!-- Cerrar sesión -->
-                        <button
-                          (click)="confirmLogout(); closeProfileDropdown()"
-                          class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                          </svg>
-                          Cerrar Sesión
-                        </button>
+                <!-- Dropdown Menu -->
+                @if (isProfileDropdownOpen) {
+                <div
+                  class="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+                >
+                  <div class="py-2">
+                    <!-- Info del usuario -->
+                    <div class="px-4 py-2 border-b border-gray-100">
+                      <div class="text-sm font-medium text-gray-900">
+                        {{ currentUser?.firstName }} {{ currentUser?.lastName }}
+                      </div>
+                      <div class="text-xs text-gray-500">
+                        {{ currentUser?.email }}
                       </div>
                     </div>
-                  }
-                }
+
+                    <!-- Enlaces del menú -->
+                    <a
+                      routerLink="/orders"
+                      (click)="closeProfileDropdown()"
+                      class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#a81b8d] transition-colors cursor-pointer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-4 h-4"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                        />
+                      </svg>
+                      Mis Pedidos
+                    </a>
+
+                    <a
+                      routerLink="/profile"
+                      (click)="closeProfileDropdown()"
+                      class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#a81b8d] transition-colors cursor-pointer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-4 h-4"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                      Mi Perfil
+                    </a>
+
+                    <!-- Separador -->
+                    <div class="border-t border-gray-100 my-2"></div>
+
+                    <!-- Cerrar sesión -->
+                    <button
+                      (click)="confirmLogout(); closeProfileDropdown()"
+                      class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-4 h-4"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                        />
+                      </svg>
+                      Cerrar Sesión
+                    </button>
+                  </div>
+                </div>
+                } }
               </div>
             </div>
           </div>
@@ -421,16 +545,30 @@ import { ConfirmModalComponent } from '../../shared/components/confirm-modal.com
               <!-- Barra de búsqueda móvil -->
               <div class="px-3 py-2">
                 <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <svg
+                      class="w-4 h-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      ></path>
                     </svg>
                   </div>
                   <input
                     type="text"
                     [(ngModel)]="searchTerm"
                     (input)="onSearch()"
-                    (keydown.enter)="navigateToSearchResults(); closeMobileMenu()"
+                    (keydown.enter)="
+                      navigateToSearchResults(); closeMobileMenu()
+                    "
                     placeholder="Buscar productos..."
                     class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a81b8d] focus:border-[#a81b8d] text-sm"
                   />
@@ -439,20 +577,24 @@ import { ConfirmModalComponent } from '../../shared/components/confirm-modal.com
 
               <!-- Categorías dinámicas en móvil -->
               <div class="mb-4">
-                <h3 class="text-sm font-semibold text-gray-900 px-3 py-2">Categorías</h3>
+                <h3 class="text-sm font-semibold text-gray-900 px-3 py-2">
+                  Categorías
+                </h3>
                 @for (category of categories; track category.id) {
-                  <button
-                    (click)="navigateToCategory(category.id); closeMobileMenu()"
-                    class="w-full text-left flex items-center gap-3 text-gray-700 hover:text-[#a81b8d] hover:bg-white px-3 py-2 text-sm rounded-lg transition-colors"
-                  >
-                    <div class="w-2 h-2 bg-[#a81b8d] rounded-full"></div>
-                    <div>
-                      <div class="font-medium">{{ category.name }}</div>
-                      @if (category.description) {
-                        <div class="text-xs text-gray-500">{{ category.description }}</div>
-                      }
+                <button
+                  (click)="navigateToCategory(category.id); closeMobileMenu()"
+                  class="w-full text-left flex items-center gap-3 text-gray-700 hover:text-[#a81b8d] hover:bg-white px-3 py-2 text-sm rounded-lg transition-colors"
+                >
+                  <div class="w-2 h-2 bg-[#a81b8d] rounded-full"></div>
+                  <div>
+                    <div class="font-medium">{{ category.name }}</div>
+                    @if (category.description) {
+                    <div class="text-xs text-gray-500">
+                      {{ category.description }}
                     </div>
-                  </button>
+                    }
+                  </div>
+                </button>
                 }
               </div>
 
@@ -506,83 +648,131 @@ import { ConfirmModalComponent } from '../../shared/components/confirm-modal.com
                 (click)="closeMobileMenu()"
                 class="relative text-gray-900 hover:text-indigo-600 px-3 py-2 text-sm font-medium flex items-center gap-2"
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M17 13v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6"/>
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M17 13v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6"
+                  />
                 </svg>
-                Carrito
-                @if (cartItemCount > 0) {
-                  <span class="bg-[#a81b8d] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] ml-auto">
-                    {{ cartItemCount }}
-                  </span>
+                Carrito @if (cartItemCount > 0) {
+                <span
+                  class="bg-[#a81b8d] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] ml-auto"
+                >
+                  {{ cartItemCount }}
+                </span>
                 }
               </a>
-              
+
               <!-- Separador -->
               <div class="border-t border-gray-200 my-2"></div>
 
               <!-- Enlaces de perfil para móvil -->
               @if (!isAuthenticated) {
-                <!-- Login para usuarios no autenticados -->
-                <a
-                  routerLink="/auth/login"
-                  (click)="closeMobileMenu()"
-                  class="flex items-center gap-2 text-gray-900 hover:text-[#a81b8d] px-3 py-2 text-sm font-medium transition-colors"
+              <!-- Login para usuarios no autenticados -->
+              <a
+                routerLink="/auth/login"
+                (click)="closeMobileMenu()"
+                class="flex items-center gap-2 text-gray-900 hover:text-[#a81b8d] px-3 py-2 text-sm font-medium transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-5 h-5"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                    />
-                  </svg>
-                  Iniciar Sesión
-                </a>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                  />
+                </svg>
+                Iniciar Sesión
+              </a>
               } @else {
-                <!-- Información del usuario -->
-                <div class="px-3 py-2 border-b border-gray-200 mb-2">
-                  <div class="text-sm font-medium text-gray-900">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</div>
-                  <div class="text-xs text-gray-500">{{ currentUser?.email }}</div>
+              <!-- Información del usuario -->
+              <div class="px-3 py-2 border-b border-gray-200 mb-2">
+                <div class="text-sm font-medium text-gray-900">
+                  {{ currentUser?.firstName }} {{ currentUser?.lastName }}
                 </div>
-                
-                <!-- Enlaces para usuarios autenticados -->
-                <a
-                  routerLink="/orders"
-                  (click)="closeMobileMenu()"
-                  class="flex items-center gap-2 text-gray-900 hover:text-[#a81b8d] px-3 py-2 text-sm font-medium transition-colors"
+                <div class="text-xs text-gray-500">
+                  {{ currentUser?.email }}
+                </div>
+              </div>
+
+              <!-- Enlaces para usuarios autenticados -->
+              <a
+                routerLink="/orders"
+                (click)="closeMobileMenu()"
+                class="flex items-center gap-2 text-gray-900 hover:text-[#a81b8d] px-3 py-2 text-sm font-medium transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                  </svg>
-                  Mis Pedidos
-                </a>
-                <a
-                  routerLink="/profile"
-                  (click)="closeMobileMenu()"
-                  class="flex items-center gap-2 text-gray-900 hover:text-[#a81b8d] px-3 py-2 text-sm font-medium transition-colors"
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                  />
+                </svg>
+                Mis Pedidos
+              </a>
+              <a
+                routerLink="/profile"
+                (click)="closeMobileMenu()"
+                class="flex items-center gap-2 text-gray-900 hover:text-[#a81b8d] px-3 py-2 text-sm font-medium transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  </svg>
-                  Mi Perfil
-                </a>
-                
-                <!-- Cerrar sesión -->
-                <button
-                  (click)="confirmLogout(); closeMobileMenu()"
-                  class="w-full flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2 text-sm font-medium transition-colors"
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+                Mi Perfil
+              </a>
+
+              <!-- Cerrar sesión -->
+              <button
+                (click)="confirmLogout(); closeMobileMenu()"
+                class="w-full flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2 text-sm font-medium transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                  </svg>
-                  Cerrar Sesión
-                </button>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                  />
+                </svg>
+                Cerrar Sesión
+              </button>
               }
             </div>
           </div>
@@ -615,13 +805,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isLogoutModalOpen = false; // Modal de confirmación de cierre de sesión
   categories: Category[] = [];
   cartItemCount = 0;
-  
+
   // Propiedades de búsqueda
   searchTerm = '';
   searchResults: Product[] = [];
   isSearching = false;
   private searchSubject = new Subject<string>();
-  
+
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -651,10 +841,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private setupCartSubscription(): void {
     // Obtener el estado inicial del carrito
     this.cartItemCount = this.cartService.getTotalItemCount();
-    
+
     // Suscribirse a los cambios del carrito
     this.subscriptions.push(
-      this.cartService.cart$.subscribe(cart => {
+      this.cartService.cart$.subscribe((cart) => {
         this.cartItemCount = cart.totalItems;
       })
     );
@@ -665,32 +855,33 @@ export class HeaderComponent implements OnInit, OnDestroy {
    */
   private setupSearchSubscription(): void {
     this.subscriptions.push(
-      this.searchSubject.pipe(
-        debounceTime(300),
-        distinctUntilChanged()
-      ).subscribe(searchTerm => {
-        this.performSearch(searchTerm);
-      })
+      this.searchSubject
+        .pipe(debounceTime(300), distinctUntilChanged())
+        .subscribe((searchTerm) => {
+          this.performSearch(searchTerm);
+        })
     );
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   /**
    * Carga las categorías desde el backend
    */
   private loadCategories(): void {
-    
     // Primero intentar obtener categorías públicas
     this.productService.getPublicCategories().subscribe({
       next: (categories) => {
         this.categories = categories || [];
       },
       error: (error) => {
-        console.error('🏠 Header: Error loading public categories, trying admin endpoint as fallback:', error);
-        
+        console.error(
+          '🏠 Header: Error loading public categories, trying admin endpoint as fallback:',
+          error
+        );
+
         // Si falla el endpoint público, intentar con el de admin (solo si el usuario está autenticado)
         if (this.isAuthenticated) {
           this.productService.getAllCategories().subscribe({
@@ -698,15 +889,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
               this.categories = categories || [];
             },
             error: (adminError) => {
-              
               // Si ambos fallan, usar categorías por defecto
               // this.categories = this.getFallbackCategories();
-            }
+            },
           });
         } else {
           // this.categories = this.getFallbackCategories();
         }
-      }
+      },
     });
   }
 
@@ -731,19 +921,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
    */
   onCategoryHover(categoryId: string, event: MouseEvent): void {
     this.hoveredCategoryId = categoryId;
-    
+
     // Calcular la posición del submenu basándose en el elemento actual
     const target = event.currentTarget as HTMLElement;
     const rect = target.getBoundingClientRect();
-    
+
     // Obtener la posición del dropdown principal
-    const dropdownElement = document.querySelector('.absolute.top-full.left-0.mt-2');
+    const dropdownElement = document.querySelector(
+      '.absolute.top-full.left-0.mt-2'
+    );
     if (dropdownElement) {
       const dropdownRect = dropdownElement.getBoundingClientRect();
-      
+
       this.submenuPosition = {
         left: dropdownRect.right + 4, // 4px de separación
-        top: rect.top // Alineado con el item de la categoría
+        top: rect.top, // Alineado con el item de la categoría
       };
     }
   }
@@ -760,7 +952,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
    */
   navigateToCategory(categoryId: string): void {
     this.closeCategoriesDropdown();
-    this.router.navigate(['/products'], { queryParams: { category: categoryId } });
+    this.router.navigate(['/products'], {
+      queryParams: { category: categoryId },
+    });
   }
 
   /**
@@ -768,11 +962,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
    */
   navigateToCategoryType(categoryId: string, categoryTypeId: string): void {
     this.closeCategoriesDropdown();
-    this.router.navigate(['/products'], { 
-      queryParams: { 
+    this.router.navigate(['/products'], {
+      queryParams: {
         category: categoryId,
-        categoryType: categoryTypeId 
-      } 
+        categoryType: categoryTypeId,
+      },
     });
   }
 
@@ -797,7 +991,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onDocumentClick(event: Event): void {
     const target = event.target as HTMLElement;
     const dropdownElement = target.closest('.relative');
-    
+
     if (!dropdownElement) {
       this.closeCategoriesDropdown();
       this.closeProfileDropdown();
@@ -878,7 +1072,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     this.isSearching = true;
-    
+
     this.productService.searchProducts(searchTerm).subscribe({
       next: (products) => {
         this.searchResults = products.slice(0, 8); // Limitamos a 8 resultados
@@ -888,7 +1082,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         console.error('Error en búsqueda:', error);
         this.searchResults = [];
         this.isSearching = false;
-      }
+      },
     });
   }
 
@@ -905,8 +1099,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
    */
   navigateToSearchResults(): void {
     if (this.searchTerm.trim()) {
-      this.router.navigate(['/products'], { 
-        queryParams: { search: this.searchTerm.trim() } 
+      this.router.navigate(['/products'], {
+        queryParams: { search: this.searchTerm.trim() },
       });
       this.clearSearch();
     }

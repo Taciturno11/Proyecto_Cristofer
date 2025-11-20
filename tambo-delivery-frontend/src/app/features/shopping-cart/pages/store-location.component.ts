@@ -1,4 +1,10 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -23,20 +29,28 @@ interface TamboStore {
   selector: 'app-store-location',
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
-  styles: [`
-    #map {
-      cursor: crosshair;
-    }
-    #map:hover {
-      cursor: pointer;
-    }
-  `],
+  styles: [
+    `
+      #map {
+        cursor: crosshair;
+      }
+      #map:hover {
+        cursor: pointer;
+      }
+    `,
+  ],
   template: `
     <div class="container mx-auto px-4 py-8 max-w-7xl">
       <!-- Breadcrumb -->
       <nav class="text-sm mb-6">
         <ol class="flex items-center space-x-2">
-          <li><a (click)="goToCart()" class="text-[#a81b8d] hover:underline cursor-pointer">Carrito</a></li>
+          <li>
+            <a
+              (click)="goToCart()"
+              class="text-[#a81b8d] hover:underline cursor-pointer"
+              >Carrito</a
+            >
+          </li>
           <li class="text-gray-400">/</li>
           <li class="text-gray-600 font-medium">Ubicación de entrega</li>
           <li class="text-gray-400">/</li>
@@ -44,57 +58,114 @@ interface TamboStore {
         </ol>
       </nav>
 
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">Encuentra tu Tambo más cercano</h1>
-      <p class="text-gray-600 mb-8">Te entregaremos desde la tienda más cerca de ti en solo 30 minutos</p>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">
+        Encuentra tu Tambo más cercano
+      </h1>
+      <p class="text-gray-600 mb-8">
+        Te entregaremos desde la tienda más cerca de ti en solo 30 minutos
+      </p>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
         <!-- Mapa -->
         <div class="lg:col-span-2">
           <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <!-- Mapa con Leaflet + OpenStreetMap (100% GRATIS) -->
             <div #mapContainer id="map" class="w-full h-[500px]"></div>
-            
+
             <!-- Información de ubicación actual -->
             @if (currentLocation) {
-              <div class="p-4 bg-gray-50 border-t">
-                  <div class="flex items-start space-x-3">
-                  <svg class="h-5 w-5 text-[#a81b8d] mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
-                  </svg>
-                  <div class="flex-1">
-                    <p class="text-sm font-medium text-gray-900">Tu ubicación de entrega</p>
-                    <p class="text-sm text-gray-600">{{ currentAddress }}</p>
-                    
-                    <div class="mt-2 flex items-center space-x-2">
-                      <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path>
-                      </svg>
-                      <p class="text-xs text-blue-600 font-medium">💡 Haz clic en el mapa para cambiar tu ubicación</p>
-                    </div>
-                    
-                    @if (changingLocation) {
-                      <div class="mt-2 flex items-center space-x-2 text-xs text-gray-500">
-                        <svg class="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
-                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span>Buscando tiendas cercanas...</span>
-                      </div>
-                    }
+            <div class="p-4 bg-gray-50 border-t">
+              <div class="flex items-start space-x-3">
+                <svg
+                  class="h-5 w-5 text-[#a81b8d] mt-0.5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">
+                    Tu ubicación de entrega
+                  </p>
+                  <p class="text-sm text-gray-600">{{ currentAddress }}</p>
+
+                  <div class="mt-2 flex items-center space-x-2">
+                    <svg
+                      class="h-4 w-4 text-blue-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
+                      ></path>
+                    </svg>
+                    <p class="text-xs text-blue-600 font-medium">
+                      💡 Haz clic en el mapa para cambiar tu ubicación
+                    </p>
                   </div>
+
+                  @if (changingLocation) {
+                  <div
+                    class="mt-2 flex items-center space-x-2 text-xs text-gray-500"
+                  >
+                    <svg
+                      class="animate-spin h-3 w-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      ></circle>
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    <span>Buscando tiendas cercanas...</span>
+                  </div>
+                  }
                 </div>
               </div>
+            </div>
             } @else {
-              <div class="p-4 bg-blue-50 border-t border-blue-200">
-                <div class="flex items-center space-x-2">
-                  <svg class="animate-spin h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <p class="text-sm text-blue-800">Obteniendo tu ubicación...</p>
-                </div>
+            <div class="p-4 bg-blue-50 border-t border-blue-200">
+              <div class="flex items-center space-x-2">
+                <svg
+                  class="animate-spin h-5 w-5 text-blue-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                <p class="text-sm text-blue-800">Obteniendo tu ubicación...</p>
               </div>
+            </div>
             }
           </div>
         </div>
@@ -103,87 +174,125 @@ interface TamboStore {
         <div class="lg:col-span-1">
           <div class="bg-white rounded-lg shadow-md p-6">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">
-              Tiendas Tambo cercanas
-              @if (nearbyStores.length > 0) {
-                <span class="text-sm font-normal text-gray-600">({{ nearbyStores.length }})</span>
+              Tiendas Tambo cercanas @if (nearbyStores.length > 0) {
+              <span class="text-sm font-normal text-gray-600"
+                >({{ nearbyStores.length }})</span
+              >
               }
             </h3>
 
             @if (loadingStores) {
-              <div class="text-center py-8">
-                <svg class="animate-spin h-8 w-8 text-[#a81b8d] mx-auto mb-2" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <p class="text-sm text-gray-600">Buscando tiendas...</p>
-              </div>
+            <div class="text-center py-8">
+              <svg
+                class="animate-spin h-8 w-8 text-[#a81b8d] mx-auto mb-2"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              <p class="text-sm text-gray-600">Buscando tiendas...</p>
+            </div>
             } @else if (nearbyStores.length === 0) {
-              <div class="text-center py-8">
-                <svg class="h-12 w-12 text-gray-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                <p class="text-sm text-gray-600">No se encontraron tiendas cercanas</p>
-              </div>
+            <div class="text-center py-8">
+              <svg
+                class="h-12 w-12 text-gray-400 mx-auto mb-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              <p class="text-sm text-gray-600">
+                No se encontraron tiendas cercanas
+              </p>
+            </div>
             } @else {
-              <div class="space-y-3 max-h-[400px] overflow-y-auto">
-                @for (store of nearbyStores; track store.id) {
-                  <div 
-                    class="border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md"
-                    [class.border-[#a81b8d]]="selectedStore?.id === store.id"
-                    [class.bg-purple-50]="selectedStore?.id === store.id"
-                    [class.border-gray-200]="selectedStore?.id !== store.id"
-                    (click)="selectStore(store)"
-                  >
-                    <div class="flex items-start justify-between mb-2">
-                      <div class="flex-1">
-                        <h4 class="font-medium text-gray-900">{{ store.name }}</h4>
-                        @if (store.distance) {
-                          <p class="text-xs text-[#a81b8d] font-medium">
-                            📍 {{ store.distance.toFixed(2) }} km - ⏱️ {{ store.estimatedTime }} min
-                          </p>
-                        }
-                      </div>
-                      <input 
-                        type="radio" 
-                        [checked]="selectedStore?.id === store.id"
-                        class="mt-1 text-[#a81b8d] focus:ring-[#a81b8d]"
-                        readonly
-                      />
-                    </div>
-                    <p class="text-sm text-gray-600 mb-1">{{ store.address }}</p>
-                    <p class="text-xs text-gray-500">{{ store.hours }}</p>
-                    <p class="text-xs text-gray-500">📞 {{ store.phone }}</p>
+            <div class="space-y-3 max-h-[400px] overflow-y-auto">
+              @for (store of nearbyStores; track store.id) {
+              <div
+                class="border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md"
+                [class.border-[#a81b8d]]="selectedStore?.id === store.id"
+                [class.bg-purple-50]="selectedStore?.id === store.id"
+                [class.border-gray-200]="selectedStore?.id !== store.id"
+                (click)="selectStore(store)"
+              >
+                <div class="flex items-start justify-between mb-2">
+                  <div class="flex-1">
+                    <h4 class="font-medium text-gray-900">{{ store.name }}</h4>
+                    @if (store.distance) {
+                    <p class="text-xs text-[#a81b8d] font-medium">
+                      📍 {{ store.distance.toFixed(2) }} km - ⏱️
+                      {{ store.estimatedTime }} min
+                    </p>
+                    }
                   </div>
-                }
+                  <input
+                    type="radio"
+                    [checked]="selectedStore?.id === store.id"
+                    class="mt-1 text-[#a81b8d] focus:ring-[#a81b8d]"
+                    readonly
+                  />
+                </div>
+                <p class="text-sm text-gray-600 mb-1">{{ store.address }}</p>
+                <p class="text-xs text-gray-500">{{ store.hours }}</p>
+                <p class="text-xs text-gray-500">📞 {{ store.phone }}</p>
               </div>
+              }
+            </div>
             }
 
             <!-- Botón continuar -->
             @if (selectedStore) {
-              <div class="mt-6 pt-6 border-t">
-                <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                    <p class="text-xs text-green-800">
-                      ✅ Tienda seleccionada: <span class="font-medium">{{ selectedStore.name }}</span>
-                    </p>
-                    <p class="text-xs text-green-700 mt-1">
-                      ⏱️ Tiempo estimado de entrega: {{ selectedStore.estimatedTime || 30 }} min
-                    </p>
-                    <p class="text-xs text-green-600 mt-1">
-                      📍 Distancia: {{ selectedStore.distance?.toFixed(2) }} km
-                    </p>
-                </div>
-
-                <app-button
-                  [config]="{
-                    text: 'Continuar al pago',
-                    type: 'primary',
-                    size: 'lg'
-                  }"
-                  (buttonClick)="proceedToPayment()"
-                  class="w-full"
-                />
+            <div class="mt-6 pt-6 border-t">
+              <div
+                class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4"
+              >
+                <p class="text-xs text-green-800">
+                  ✅ Tienda seleccionada:
+                  <span class="font-medium">{{ selectedStore.name }}</span>
+                </p>
+                <p class="text-xs text-green-700 mt-1">
+                  ⏱️ Tiempo estimado de entrega:
+                  {{ selectedStore.estimatedTime || 30 }} min
+                </p>
+                <p class="text-xs text-green-600 mt-1">
+                  📍 Distancia: {{ selectedStore.distance?.toFixed(2) }} km
+                </p>
               </div>
+
+              <app-button
+                [config]="{
+                  text: 'Continuar al pago',
+                  type: 'primary',
+                  size: 'lg'
+                }"
+                (buttonClick)="proceedToPayment()"
+                class="w-full"
+              />
+            </div>
             }
           </div>
         </div>
@@ -201,11 +310,11 @@ interface TamboStore {
         />
       </div>
     </div>
-  `
+  `,
 })
 export class StoreLocationComponent implements OnInit, AfterViewInit {
   @ViewChild('mapContainer') mapContainer!: ElementRef;
-  
+
   map: any;
   currentLocation: { lat: number; lng: number } | null = null;
   currentAddress = '';
@@ -216,7 +325,7 @@ export class StoreLocationComponent implements OnInit, AfterViewInit {
   userMarker: any = null; // Marcador de usuario
   changingLocation = false; // Indicador de cambio de ubicación
   storeMarkers: any[] = []; // Almacenar marcadores de tiendas
-  
+
   // Cache de tiendas obtenidas de OpenStreetMap
   private tamboStoresData: TamboStore[] = [];
 
@@ -259,7 +368,7 @@ export class StoreLocationComponent implements OnInit, AfterViewInit {
         (position) => {
           this.currentLocation = {
             lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lng: position.coords.longitude,
           };
           this.createMap();
           this.findNearbyStores();
@@ -293,7 +402,7 @@ export class StoreLocationComponent implements OnInit, AfterViewInit {
     // Agregar capa de OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
-      maxZoom: 19
+      maxZoom: 19,
     }).addTo(this.map);
 
     // Crear icono personalizado para ubicación actual
@@ -308,11 +417,14 @@ export class StoreLocationComponent implements OnInit, AfterViewInit {
         box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       "></div>`,
       iconSize: [20, 20],
-      iconAnchor: [10, 10]
+      iconAnchor: [10, 10],
     });
 
     // Agregar marcador de ubicación actual y guardarlo
-    this.userMarker = L.marker([this.currentLocation.lat, this.currentLocation.lng], { icon: userIcon })
+    this.userMarker = L.marker(
+      [this.currentLocation.lat, this.currentLocation.lng],
+      { icon: userIcon }
+    )
       .addTo(this.map)
       .bindPopup('Tu ubicación')
       .openPopup();
@@ -344,103 +456,126 @@ out center 5;`;
     fetch('https://overpass-api.de/api/interpreter', {
       method: 'POST',
       body: overpassQuery,
-      signal: controller.signal
+      signal: controller.signal,
     })
-    .then(response => {
-      clearTimeout(timeoutId);
-      return response.json();
-    })
-    .then(data => {
-      if (data.elements && data.elements.length > 0) {
-        // Procesar tiendas encontradas y filtrar solo Tambo (no Limatambo ni Cajatambo)
-        const filteredElements = data.elements
-          .filter((element: any) => {
-            const name = element.tags?.name || '';
-            const lat = element.lat || element.center?.lat;
-            // Filtrar: debe tener coordenadas y NO contener "Limatambo" ni "Cajatambo"
-            return (lat && !name.toLowerCase().includes('limatambo') && !name.toLowerCase().includes('cajatambo'));
-          })
-          .slice(0, 5); // Reducido a 5 elementos para más velocidad
+      .then((response) => {
+        clearTimeout(timeoutId);
+        return response.json();
+      })
+      .then((data) => {
+        if (data.elements && data.elements.length > 0) {
+          // Procesar tiendas encontradas y filtrar solo Tambo (no Limatambo ni Cajatambo)
+          const filteredElements = data.elements
+            .filter((element: any) => {
+              const name = element.tags?.name || '';
+              const lat = element.lat || element.center?.lat;
+              // Filtrar: debe tener coordenadas y NO contener "Limatambo" ni "Cajatambo"
+              return (
+                lat &&
+                !name.toLowerCase().includes('limatambo') &&
+                !name.toLowerCase().includes('cajatambo')
+              );
+            })
+            .slice(0, 5); // Reducido a 5 elementos para más velocidad
 
-        // Obtener direcciones reales solo para las 5 más cercanas (optimización)
-        const storesWithDistance = filteredElements.map((element: any, index: number) => {
-          const lat = element.lat || element.center?.lat;
-          const lon = element.lon || element.center?.lon;
-          const distance = this.calculateDistance(
-            this.currentLocation!.lat,
-            this.currentLocation!.lng,
-            lat,
-            lon
-          );
-          
-          return {
-            element,
-            index,
-            lat,
-            lon,
-            distance
-          };
-        })
-        .sort((a: any, b: any) => a.distance - b.distance)
-        .slice(0, 5); // Solo las 5 más cercanas
+          // Obtener direcciones reales solo para las 5 más cercanas (optimización)
+          const storesWithDistance = filteredElements
+            .map((element: any, index: number) => {
+              const lat = element.lat || element.center?.lat;
+              const lon = element.lon || element.center?.lon;
+              const distance = this.calculateDistance(
+                this.currentLocation!.lat,
+                this.currentLocation!.lng,
+                lat,
+                lon
+              );
 
-        // Obtener direcciones en paralelo con Promise.all pero con límite
-        const storePromises = storesWithDistance.map(async ({ element, index, lat, lon }: any) => {
-          // Obtener dirección real mediante geocodificación inversa
-          let address = 'Lima, Perú';
-          try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`, {
-              signal: AbortSignal.timeout(2000) // Timeout de 2 segundos por geocodificación
-            });
-            const addressData = await response.json();
-            if (addressData.address) {
-              const parts = [];
-              if (addressData.address.road) parts.push(addressData.address.road);
-              if (addressData.address.house_number) parts.push(addressData.address.house_number);
-              if (addressData.address.suburb) parts.push(addressData.address.suburb);
-              if (addressData.address.city_district) parts.push(addressData.address.city_district);
-              address = parts.length > 0 ? parts.join(', ') : addressData.display_name;
+              return {
+                element,
+                index,
+                lat,
+                lon,
+                distance,
+              };
+            })
+            .sort((a: any, b: any) => a.distance - b.distance)
+            .slice(0, 5); // Solo las 5 más cercanas
+
+          // Obtener direcciones en paralelo con Promise.all pero con límite
+          const storePromises = storesWithDistance.map(
+            async ({ element, index, lat, lon }: any) => {
+              // Obtener dirección real mediante geocodificación inversa
+              let address = 'Lima, Perú';
+              try {
+                const response = await fetch(
+                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`,
+                  {
+                    signal: AbortSignal.timeout(2000), // Timeout de 2 segundos por geocodificación
+                  }
+                );
+                const addressData = await response.json();
+                if (addressData.address) {
+                  const parts = [];
+                  if (addressData.address.road)
+                    parts.push(addressData.address.road);
+                  if (addressData.address.house_number)
+                    parts.push(addressData.address.house_number);
+                  if (addressData.address.suburb)
+                    parts.push(addressData.address.suburb);
+                  if (addressData.address.city_district)
+                    parts.push(addressData.address.city_district);
+                  address =
+                    parts.length > 0
+                      ? parts.join(', ')
+                      : addressData.display_name;
+                }
+              } catch (error) {
+                // Si falla o toma mucho tiempo, usar dirección genérica
+                console.warn('Error obteniendo dirección:', error);
+              }
+
+              return {
+                id: element.id || index,
+                name: element.tags?.name || 'Tambo+',
+                address: address,
+                lat: lat,
+                lng: lon,
+                phone:
+                  element.tags?.phone ||
+                  element.tags?.['contact:phone'] ||
+                  'No disponible',
+                hours: element.tags?.opening_hours || '24 horas',
+              };
             }
-          } catch (error) {
-            // Si falla o toma mucho tiempo, usar dirección genérica
-            console.warn('Error obteniendo dirección:', error);
-          }
+          );
 
-          return {
-            id: element.id || index,
-            name: element.tags?.name || 'Tambo+',
-            address: address,
-            lat: lat,
-            lng: lon,
-            phone: element.tags?.phone || element.tags?.['contact:phone'] || 'No disponible',
-            hours: element.tags?.opening_hours || '24 horas'
-          };
-        });
+          // Esperar a que todas las direcciones se obtengan
+          Promise.all(storePromises).then((stores) => {
+            this.tamboStoresData = stores;
 
-        // Esperar a que todas las direcciones se obtengan
-        Promise.all(storePromises).then(stores => {
-          this.tamboStoresData = stores;
-          
+            // Si no hay datos de OSM, usar fallback
+            if (!this.tamboStoresData || this.tamboStoresData.length === 0) {
+              this.tamboStoresData = this.getFallbackStores();
+            }
+
+            this.processNearbyStores();
+          });
+        } else {
           // Si no hay datos de OSM, usar fallback
-          if (!this.tamboStoresData || this.tamboStoresData.length === 0) {
-            this.tamboStoresData = this.getFallbackStores();
-          }
-
+          this.tamboStoresData = this.getFallbackStores();
           this.processNearbyStores();
-        });
-      } else {
-        // Si no hay datos de OSM, usar fallback
+        }
+      })
+      .catch((error) => {
+        clearTimeout(timeoutId);
+        console.warn(
+          'Búsqueda OSM fallida, usando datos locales:',
+          error.message
+        );
+        // Usar tiendas locales en caso de error o timeout
         this.tamboStoresData = this.getFallbackStores();
         this.processNearbyStores();
-      }
-    })
-    .catch(error => {
-      clearTimeout(timeoutId);
-      console.warn('Búsqueda OSM fallida, usando datos locales:', error.message);
-      // Usar tiendas locales en caso de error o timeout
-      this.tamboStoresData = this.getFallbackStores();
-      this.processNearbyStores();
-    });
+      });
   }
 
   private processNearbyStores(): void {
@@ -448,7 +583,7 @@ out center 5;`;
 
     // Calcular distancia, tiempo estimado y filtrar por rango
     this.nearbyStores = this.tamboStoresData
-      .map(store => {
+      .map((store) => {
         const distance = this.calculateDistance(
           this.currentLocation!.lat,
           this.currentLocation!.lng,
@@ -459,10 +594,10 @@ out center 5;`;
         return {
           ...store,
           distance,
-          estimatedTime
+          estimatedTime,
         };
       })
-      .filter(store => (store.distance || 0) <= 3) // Solo tiendas a máx 3km
+      .filter((store) => (store.distance || 0) <= 3) // Solo tiendas a máx 3km
       .sort((a, b) => (a.distance || 0) - (b.distance || 0))
       .slice(0, 5); // Top 5 más cercanas
 
@@ -477,9 +612,9 @@ out center 5;`;
 
   private formatAddress(tags: any): string {
     if (!tags) return 'Dirección no disponible';
-    
+
     const parts = [];
-    
+
     // Intentar construir dirección de diferentes formas
     if (tags['addr:street']) {
       let street = tags['addr:street'];
@@ -488,22 +623,22 @@ out center 5;`;
       }
       parts.push(street);
     }
-    
+
     if (tags['addr:district']) parts.push(tags['addr:district']);
     if (tags['addr:suburb']) parts.push(tags['addr:suburb']);
     if (tags['addr:city']) parts.push(tags['addr:city']);
-    
+
     // Si no hay dirección estructurada, usar el campo 'address' si existe
     if (parts.length === 0 && tags['address']) {
       return tags['address'];
     }
-    
+
     // Si tampoco hay 'address', intentar con otros campos comunes
     if (parts.length === 0) {
       if (tags['place']) parts.push(tags['place']);
       if (tags['location']) parts.push(tags['location']);
     }
-    
+
     return parts.length > 0 ? parts.join(', ') : 'Lima, Perú';
   }
 
@@ -518,134 +653,134 @@ out center 5;`;
         lat: -12.0957,
         lng: -77.0365,
         phone: '(01) 411-3000',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 2,
         name: 'Tambo+ Miraflores',
         address: 'Av. Larco 1301, Miraflores',
         lat: -12.1212,
-        lng: -77.0300,
+        lng: -77.03,
         phone: '(01) 445-2200',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 3,
         name: 'Tambo+ Surco',
         address: 'Av. Benavides 3680, Surco',
-        lat: -12.1360,
+        lat: -12.136,
         lng: -77.0083,
         phone: '(01) 372-1500',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 4,
         name: 'Tambo+ La Molina',
         address: 'Av. Javier Prado Este 4200, La Molina',
-        lat: -12.0750,
-        lng: -76.9450,
+        lat: -12.075,
+        lng: -76.945,
         phone: '(01) 368-7700',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 5,
         name: 'Tambo+ San Borja',
         address: 'Av. San Luis 2315, San Borja',
-        lat: -12.0960,
-        lng: -77.0030,
+        lat: -12.096,
+        lng: -77.003,
         phone: '(01) 225-4800',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 6,
         name: 'Tambo+ Jesús María',
         address: 'Av. Brasil 2791, Jesús María',
-        lat: -12.0720,
-        lng: -77.0490,
+        lat: -12.072,
+        lng: -77.049,
         phone: '(01) 330-5500',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 7,
         name: 'Tambo+ Lince',
         address: 'Av. Arequipa 2650, Lince',
-        lat: -12.0850,
-        lng: -77.0350,
+        lat: -12.085,
+        lng: -77.035,
         phone: '(01) 422-8900',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 8,
         name: 'Tambo+ Magdalena',
         address: 'Av. Brasil 3890, Magdalena',
-        lat: -12.0880,
-        lng: -77.0650,
+        lat: -12.088,
+        lng: -77.065,
         phone: '(01) 263-7400',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 9,
         name: 'Tambo+ San Miguel',
         address: 'Av. La Marina 2000, San Miguel',
-        lat: -12.0770,
-        lng: -77.0850,
+        lat: -12.077,
+        lng: -77.085,
         phone: '(01) 578-1200',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 10,
         name: 'Tambo+ Barranco',
         address: 'Av. Grau 350, Barranco',
-        lat: -12.1450,
-        lng: -77.0200,
+        lat: -12.145,
+        lng: -77.02,
         phone: '(01) 247-3300',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 11,
         name: 'Tambo+ Pueblo Libre',
         address: 'Av. Universitaria 1801, Pueblo Libre',
-        lat: -12.0720,
-        lng: -77.0680,
+        lat: -12.072,
+        lng: -77.068,
         phone: '(01) 461-9800',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 12,
         name: 'Tambo+ Los Olivos',
         address: 'Av. Alfredo Mendiola 5200, Los Olivos',
-        lat: -11.9850,
-        lng: -77.0620,
+        lat: -11.985,
+        lng: -77.062,
         phone: '(01) 533-2100',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 13,
         name: 'Tambo+ Independencia',
         address: 'Av. Túpac Amaru 4890, Independencia',
-        lat: -11.9920,
-        lng: -77.0480,
+        lat: -11.992,
+        lng: -77.048,
         phone: '(01) 528-4500',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 14,
         name: 'Tambo+ Breña',
         address: 'Av. Arica 1250, Breña',
-        lat: -12.0580,
-        lng: -77.0450,
+        lat: -12.058,
+        lng: -77.045,
         phone: '(01) 433-7200',
-        hours: '24 horas'
+        hours: '24 horas',
       },
       {
         id: 15,
         name: 'Tambo+ Chorrillos',
         address: 'Av. Huaylas 2100, Chorrillos',
-        lat: -12.1680,
-        lng: -77.0120,
+        lat: -12.168,
+        lng: -77.012,
         phone: '(01) 251-8900',
-        hours: '24 horas'
-      }
+        hours: '24 horas',
+      },
     ];
   }
 
@@ -653,7 +788,7 @@ out center 5;`;
     if (!this.map || !this.nearbyStores) return;
 
     // Limpiar marcadores anteriores de tiendas
-    this.storeMarkers.forEach(marker => {
+    this.storeMarkers.forEach((marker) => {
       this.map.removeLayer(marker);
     });
     this.storeMarkers = [];
@@ -681,19 +816,27 @@ out center 5;`;
         </div>`,
         iconSize: [32, 32],
         iconAnchor: [16, 32],
-        popupAnchor: [0, -32]
+        popupAnchor: [0, -32],
       });
 
-      const marker = L.marker([store.lat, store.lng], { icon: storeIcon })
-        .addTo(this.map)
-        .bindPopup(`
+      const marker = L.marker([store.lat, store.lng], {
+        icon: storeIcon,
+      }).addTo(this.map).bindPopup(`
           <div style="min-width: 200px;">
-            <h3 style="font-weight: bold; margin-bottom: 8px; color: #a81b8d;">${store.name}</h3>
+            <h3 style="font-weight: bold; margin-bottom: 8px; color: #a81b8d;">${
+              store.name
+            }</h3>
             <p style="margin: 4px 0; font-size: 13px;">${store.address}</p>
-            <p style="margin: 4px 0; font-size: 12px; color: #666;">📞 ${store.phone}</p>
-            <p style="margin: 4px 0; font-size: 12px; color: #666;">🕒 ${store.hours}</p>
+            <p style="margin: 4px 0; font-size: 12px; color: #666;">📞 ${
+              store.phone
+            }</p>
+            <p style="margin: 4px 0; font-size: 12px; color: #666;">🕒 ${
+              store.hours
+            }</p>
             <p style="margin: 8px 0 0 0; font-size: 13px; color: #a81b8d; font-weight: bold;">
-              📍 ${store.distance?.toFixed(2)} km - ⏱️ ${store.estimatedTime} min
+              📍 ${store.distance?.toFixed(2)} km - ⏱️ ${
+        store.estimatedTime
+      } min
             </p>
           </div>
         `);
@@ -702,7 +845,7 @@ out center 5;`;
       marker.on('click', () => {
         this.selectStore(store);
       });
-      
+
       // Guardar marcador para poder limpiarlo después
       this.storeMarkers.push(marker);
     });
@@ -738,14 +881,21 @@ out center 5;`;
     }, 500);
   }
 
-  private calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  private calculateDistance(
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number
+  ): number {
     const R = 6371; // Radio de la Tierra en km
     const dLat = this.deg2rad(lat2 - lat1);
     const dLng = this.deg2rad(lng2 - lng1);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      Math.cos(this.deg2rad(lat1)) *
+        Math.cos(this.deg2rad(lat2)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -759,15 +909,15 @@ out center 5;`;
 
     // Usar Nominatim de OpenStreetMap para geocodificación inversa (GRATIS)
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${this.currentLocation.lat}&lon=${this.currentLocation.lng}`;
-    
+
     fetch(url)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data && data.display_name) {
           this.currentAddress = data.display_name;
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error en geocodificación:', error);
         this.currentAddress = 'Lima, Perú';
       });
@@ -785,7 +935,7 @@ out center 5;`;
     if (this.currentLocation && this.map) {
       const latlngs = [
         [this.currentLocation.lat, this.currentLocation.lng],
-        [store.lat, store.lng]
+        [store.lat, store.lng],
       ];
 
       // Crear línea de ruta con estilo
@@ -794,7 +944,7 @@ out center 5;`;
         weight: 4,
         opacity: 0.7,
         dashArray: '10, 10',
-        lineJoin: 'round'
+        lineJoin: 'round',
       }).addTo(this.map);
 
       // Ajustar zoom para mostrar toda la ruta
@@ -827,7 +977,7 @@ out center 5;`;
       lat: this.currentLocation.lat,
       lng: this.currentLocation.lng,
       district: this.extractDistrict(this.currentAddress),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
     localStorage.setItem('deliveryLocation', JSON.stringify(deliveryData));
     console.log('📍 Dirección de entrega guardada:', deliveryData);
@@ -839,18 +989,31 @@ out center 5;`;
   private extractDistrict(address: string): string {
     // Intentar extraer el distrito de la dirección
     // Formato común: "Calle X, Distrito, Lima, Perú"
-    const parts = address.split(',').map(p => p.trim());
-    
+    const parts = address.split(',').map((p) => p.trim());
+
     // El distrito suele estar en la segunda o tercera posición
     if (parts.length >= 2) {
       // Intentar encontrar un distrito conocido
       const knownDistricts = [
-        'San Isidro', 'Miraflores', 'San Borja', 'Surco', 'La Molina',
-        'Cercado de Lima', 'Jesús María', 'Magdalena', 'Pueblo Libre',
-        'San Miguel', 'Lince', 'Breña', 'Los Olivos', 'Independencia',
-        'Magdalena del Mar', 'Barranco', 'Chorrillos'
+        'San Isidro',
+        'Miraflores',
+        'San Borja',
+        'Surco',
+        'La Molina',
+        'Cercado de Lima',
+        'Jesús María',
+        'Magdalena',
+        'Pueblo Libre',
+        'San Miguel',
+        'Lince',
+        'Breña',
+        'Los Olivos',
+        'Independencia',
+        'Magdalena del Mar',
+        'Barranco',
+        'Chorrillos',
       ];
-      
+
       for (const part of parts) {
         for (const district of knownDistricts) {
           if (part.toLowerCase().includes(district.toLowerCase())) {
@@ -858,11 +1021,11 @@ out center 5;`;
           }
         }
       }
-      
+
       // Si no se encuentra un distrito conocido, usar la segunda parte
       return parts[1] || parts[0];
     }
-    
+
     return 'Lima';
   }
 }
